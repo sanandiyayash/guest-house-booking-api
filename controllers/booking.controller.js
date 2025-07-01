@@ -94,7 +94,7 @@ exports.initiatePayment = async (req, res) => {
         if (!booking) {
             return res.status(404).json({ success: false, message: 'Booking not found' });
         }
-        const stripe = Stripe(env.stripeSecretKey);
+        const stripe = Stripe(env.stripe.secretKey);
 
         // Stripe Checkout Session
         const session = await stripe.checkout.sessions.create({
@@ -139,7 +139,7 @@ exports.verifyPayment = async (req, res) => {
     }
 
     try {
-        const stripe = Stripe(env.stripeSecretKey);
+        const stripe = Stripe(env.stripe.secretKey);
         // Fetch session from Stripe
         const session = await stripe.checkout.sessions.retrieve(session_id);
 
@@ -153,7 +153,7 @@ exports.verifyPayment = async (req, res) => {
         if (!booking) {
             return res.status(404).json({ success: false, message: 'Booking not found' });
         }
-
+        console.log(session.payment_status)
         // Save payment to DB
         await Payment.create({
             booking_id: bookingId,
@@ -164,7 +164,7 @@ exports.verifyPayment = async (req, res) => {
         });
 
         // Update booking status
-        booking.payment_status = 'success';
+        booking.payment_status = 'completed';
         booking.payment_mode = session.payment_method_types[0];
         await booking.save();
 

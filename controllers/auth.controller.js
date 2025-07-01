@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const otpGenerator = require('../utils/jwt');
+const otpGenerator = require('../utils/otpGenerator');
 const User = require('../models/user.model');
 const StaffUser = require('../models/staffUser.model');
 const OtpTable = require('../models/otp.model');
@@ -94,7 +94,7 @@ exports.verifyOtp = async (req, res) => {
 
         let user = await User.findOne({ where: { phone } });
         if (!user) {
-            res.status(404).json({
+            return res.status(404).json({
                 success: false,
                 message: 'NO booking found',
             });

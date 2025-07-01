@@ -45,7 +45,7 @@ app.use((req, res) => {
 db.authenticate()
     .then(() => {
         console.log('DB connected');
-        // return db.sync();
+        return db.sync();
     })
     .then(() => {
         app.listen(env.port, () => {
